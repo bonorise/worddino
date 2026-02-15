@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "WordDino | 挖掘词根，征服单词",
+    "description": "基于词根词缀、助记法与词根树的英语记忆工具。"
+  },
+  "nav": {
+    "home": "首页",
+    "about": "方法说明",
+    "privacy": "隐私"
+  },
+  "home": {
+    "title": "像语言考古学家一样学单词",
+    "subtitle": "词根拆解 + 助记故事 + 词根家族树，一次看懂、快速记牢。",
+    "placeholder": "输入英文单词，例如 transport",
+    "cta": "开始挖掘",
+    "examples": "试试这些词",
+    "methodTip": "先看结构，再看故事，最后在词根树里建立联系。"
+  },
+  "word": {
+    "aiDisclaimer": "内容由 AI 生成，仅供学习参考，请与权威词典交叉验证。",
+    "generating": "正在挖掘这个单词的词根化石...",
+    "retry": "重新生成",
+    "notFound": "输入无效，请仅输入英文单词（字母、' 或 -）。",
+    "speak": "朗读",
+    "voteUp": "有帮助",
+    "voteDown": "不准确",
+    "morphemeTitle": "词根拆解",
+    "morphemeFallback": "本词更适合按助记法直接记忆。",
+    "mnemonicTitle": "助记法",
+    "mnemonicRecommended": "推荐",
+    "mnemonicHomophone": "谐音",
+    "mnemonicImage": "画面",
+    "mnemonicStory": "故事",
+    "imagePrompt": "绘图提示词",
+    "copyPrompt": "复制提示词",
+    "examplesTitle": "例句",
+    "showTranslation": "显示中文",
+    "hideTranslation": "隐藏中文",
+    "treeTitle": "词根家族树",
+    "treeHint": "支持缩放、拖拽，点击节点可跳转。"
+  },
+  "about": {
+    "title": "学习方法",
+    "content": "WordDino 使用“熟悉 + 未知”的记忆方式。先用词根词缀理解结构，再借助谐音、画面和故事建立记忆锚点。"
+  },
+  "privacy": {
+    "title": "隐私说明",
+    "content": "我们不存储明文 IP。匿名投票基于随机访客标识与加盐哈希去重，并使用最小化日志策略。"
+  }
+}

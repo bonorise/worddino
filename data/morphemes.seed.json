@@ -1,0 +1,306 @@
+[
+  {
+    "kind": "prefix",
+    "text": "anti",
+    "meaning": {
+      "zh-CN": "反对，对抗",
+      "en": "against, opposite"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "auto",
+    "meaning": {
+      "zh-CN": "自动，自我",
+      "en": "self, automatic"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "bi",
+    "meaning": {
+      "zh-CN": "两，双",
+      "en": "two"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "co",
+    "meaning": {
+      "zh-CN": "共同，一起",
+      "en": "together"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "de",
+    "meaning": {
+      "zh-CN": "向下，离开，去除",
+      "en": "down, away, remove"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "dis",
+    "meaning": {
+      "zh-CN": "分开，否定",
+      "en": "apart, not"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "ex",
+    "meaning": {
+      "zh-CN": "向外",
+      "en": "out"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "in",
+    "meaning": {
+      "zh-CN": "向内；否定",
+      "en": "in; not"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "inter",
+    "meaning": {
+      "zh-CN": "在...之间",
+      "en": "between"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "mis",
+    "meaning": {
+      "zh-CN": "错误地",
+      "en": "wrongly"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "pre",
+    "meaning": {
+      "zh-CN": "在前，预先",
+      "en": "before"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "re",
+    "meaning": {
+      "zh-CN": "再次，向后",
+      "en": "again, back"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "sub",
+    "meaning": {
+      "zh-CN": "在下，次级",
+      "en": "under, lower"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "super",
+    "meaning": {
+      "zh-CN": "在上，超出",
+      "en": "above, beyond"
+    }
+  },
+  {
+    "kind": "prefix",
+    "text": "trans",
+    "meaning": {
+      "zh-CN": "穿过，转换",
+      "en": "across, change"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "bio",
+    "meaning": {
+      "zh-CN": "生命",
+      "en": "life"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "dict",
+    "meaning": {
+      "zh-CN": "说",
+      "en": "say"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "form",
+    "meaning": {
+      "zh-CN": "形状，形成",
+      "en": "shape, form"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "graph",
+    "meaning": {
+      "zh-CN": "写，画",
+      "en": "write, draw"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "ject",
+    "meaning": {
+      "zh-CN": "扔，投",
+      "en": "throw"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "log",
+    "meaning": {
+      "zh-CN": "言语，学科",
+      "en": "word, study"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "port",
+    "meaning": {
+      "zh-CN": "搬运",
+      "en": "carry"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "spect",
+    "meaning": {
+      "zh-CN": "看",
+      "en": "look"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "struct",
+    "meaning": {
+      "zh-CN": "建造",
+      "en": "build"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "tract",
+    "meaning": {
+      "zh-CN": "拉，拖",
+      "en": "pull, drag"
+    }
+  },
+  {
+    "kind": "root",
+    "text": "vis",
+    "meaning": {
+      "zh-CN": "看",
+      "en": "see"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "able",
+    "meaning": {
+      "zh-CN": "能够...的",
+      "en": "capable of"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "al",
+    "meaning": {
+      "zh-CN": "...的",
+      "en": "related to"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "er",
+    "meaning": {
+      "zh-CN": "人或物；比较级",
+      "en": "person/thing; comparative"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "ful",
+    "meaning": {
+      "zh-CN": "充满...的",
+      "en": "full of"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "ion",
+    "meaning": {
+      "zh-CN": "行为，状态",
+      "en": "act, state"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "ity",
+    "meaning": {
+      "zh-CN": "性质，状态",
+      "en": "quality, state"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "ive",
+    "meaning": {
+      "zh-CN": "...的，倾向",
+      "en": "having the nature of"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "less",
+    "meaning": {
+      "zh-CN": "没有...的",
+      "en": "without"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "ly",
+    "meaning": {
+      "zh-CN": "以...方式；形容词后缀",
+      "en": "in a manner; adjective suffix"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "ment",
+    "meaning": {
+      "zh-CN": "结果，过程",
+      "en": "result, process"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "ous",
+    "meaning": {
+      "zh-CN": "充满...的",
+      "en": "full of"
+    }
+  },
+  {
+    "kind": "suffix",
+    "text": "tion",
+    "meaning": {
+      "zh-CN": "动作，名词后缀",
+      "en": "action noun suffix"
+    }
+  }
+]

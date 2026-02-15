@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "WordDino | Dig Up the Roots",
+    "description": "An English vocabulary tool powered by morphemes, mnemonics and root trees."
+  },
+  "nav": {
+    "home": "Home",
+    "about": "Method",
+    "privacy": "Privacy"
+  },
+  "home": {
+    "title": "Learn words like a language archaeologist",
+    "subtitle": "Morpheme breakdown, memorable stories and a root family tree in one flow.",
+    "placeholder": "Type an English word, e.g. transport",
+    "cta": "Start Digging",
+    "examples": "Try these words",
+    "methodTip": "Understand structure first, story second, and reinforce via the root tree."
+  },
+  "word": {
+    "aiDisclaimer": "Content is AI-generated for learning only. Cross-check with authoritative dictionaries.",
+    "generating": "Unearthing morpheme fossils for this word...",
+    "retry": "Regenerate",
+    "notFound": "Invalid input. Please use letters plus apostrophe or hyphen only.",
+    "speak": "Speak",
+    "voteUp": "Helpful",
+    "voteDown": "Not accurate",
+    "morphemeTitle": "Morpheme Breakdown",
+    "morphemeFallback": "This word is better memorized directly with mnemonic techniques.",
+    "mnemonicTitle": "Mnemonics",
+    "mnemonicRecommended": "Recommended",
+    "mnemonicHomophone": "Homophone",
+    "mnemonicImage": "Image",
+    "mnemonicStory": "Story",
+    "imagePrompt": "Image Prompt",
+    "copyPrompt": "Copy Prompt",
+    "examplesTitle": "Examples",
+    "showTranslation": "Show Chinese",
+    "hideTranslation": "Hide Chinese",
+    "treeTitle": "Root Family Tree",
+    "treeHint": "Zoom, drag and click nodes to navigate."
+  },
+  "about": {
+    "title": "Method",
+    "content": "WordDino combines familiar anchors with unfamiliar words. Understand morphology first, then reinforce memory with homophones, visual scenes and stories."
+  },
+  "privacy": {
+    "title": "Privacy",
+    "content": "No plaintext IP is stored. Anonymous votes are deduplicated via salted hash on random visitor identity, with minimal logging."
+  }
+}

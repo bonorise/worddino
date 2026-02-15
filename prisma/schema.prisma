@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum WordStatus {
+  ready
+  generating
+  error
+  stub
+}
+
+enum MorphemeKind {
+  prefix
+  root
+  suffix
+}
+
+enum MorphemeSource {
+  seed
+  ai
+}
+
+enum ReviewStatus {
+  approved
+  unreviewed
+}
+
+model Word {
+  id           String         @id @default(cuid())
+  slug         String         @unique
+  display      String
+  status       WordStatus     @default(stub)
+  decomposable Boolean        @default(false)
+  ipa          String?
+  pos          String?
+  gloss        Json
+  mnemonics    Json
+  examples     Json
+  imagePrompt  String?
+  voteUp       Int            @default(0)
+  voteDown     Int            @default(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  morphemes    WordMorpheme[]
+  votes        Vote[]
+}
+
+model Morpheme {
+  id                String         @id @default(cuid())
+  kind              MorphemeKind
+  text              String         @unique
+  meaning           Json
+  pronunciationHint String?
+  examples          Json?
+  source            MorphemeSource @default(seed)
+  reviewStatus      ReviewStatus   @default(approved)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  words             WordMorpheme[]
+}
+
+model WordMorpheme {
+  id         String       @id @default(cuid())
+  wordId     String
+  morphemeId String
+  role       MorphemeKind
+  order      Int
+  createdAt  DateTime     @default(now())
+  word       Word         @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  morpheme   Morpheme     @relation(fields: [morphemeId], references: [id], onDelete: Cascade)
+
+  @@unique([wordId, order])
+  @@index([wordId])
+  @@index([morphemeId])
+}
+
+model Vote {
+  id          String   @id @default(cuid())
+  wordId      String
+  value       Int
+  fingerprint String
+  createdAt   DateTime @default(now())
+  word        Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@unique([wordId, fingerprint])
+  @@index([wordId])
+}
