@@ -14,52 +14,52 @@
 **目标**：跑通“查词 -> 词根拆解 -> 图像助记”的核心闭环。无数据库，纯静态数据 + AI 生成。
 
 ### 1. 项目初始化 (Initialization)
-- [ ] **脚手架搭建**
-    - [ ] 初始化 Next.js 15 (App Router, TypeScript, ESLint).
-    - [ ] 安装 Tailwind CSS v3.4 & 配置 `tailwind.config.ts`.
-    - [ ] 安装 `shadcn/ui` 并初始化 (Base color: Slate/Indigo).
-    - [ ] 安装核心依赖: `lucide-react`, `framer-motion`, `clsx`, `tailwind-merge`.
-- [ ] **文档注入**
-    - [ ] 创建 `docs/` 目录并填入 5 个核心架构文档.
-    - [ ] 确认 `.cursorrules` (agent.md) 已生效.
+- [x] **脚手架搭建**
+    - [x] 初始化 Next.js 15 (App Router, TypeScript, ESLint).
+    - [x] 安装 Tailwind CSS v3.4 & 配置 `tailwind.config.ts`.
+    - [x] 安装 `shadcn/ui` 并初始化 (Base color: Slate/Indigo).
+    - [x] 安装核心依赖: `lucide-react`, `framer-motion`, `clsx`, `tailwind-merge`.
+- [x] **文档注入**
+    - [x] 创建 `docs/` 目录并填入 5 个核心架构文档.
+    - [x] 确认 `agent.md`已生效.
 
 ### 2. 数据层 (Data Core - No DB)
-- [ ] **静态词根库**
-    - [ ] 创建 `lib/data/roots.json` (包含 10-20 个恐龙/自然相关的示例词根，如 `saur`, `ped`, `bio`).
-    - [ ] 定义 TypeScript 接口 (`types/index.ts`):
-        - [ ] `RootDefinition`
-        - [ ] `WordAnalysisResult`
-        - [ ] `MnemonicCardData`
-- [ ] **Mock 服务**
-    - [ ] 创建 `lib/services/mock-data.ts` 用于模拟 AI 返回的延迟和数据结构.
+- [x] **静态词根库**
+    - [x] 创建 `lib/data/roots.json` (包含 10-20 个最常见的示例词根，如 `saur`, `ped`, `bio`).
+    - [x] 定义 TypeScript 接口 (`types/index.ts`):
+        - [x] `RootDefinition`
+        - [x] `WordAnalysisResult`
+        - [x] `MnemonicCardData`
+- [x] **Mock 服务**
+    - [x] 创建 `lib/services/mock-data.ts` 用于模拟 AI 返回的延迟和数据结构.
 
 ### 3. 后端逻辑 (Serverless API)
-- [ ] **分析接口** (`app/api/analyze/route.ts`)
-    - [ ] 实现 `POST` 请求处理逻辑.
-    - [ ] 步骤 1: 读取本地 `roots.json` 匹配词根.
-    - [ ] 步骤 2: (MVP) 返回 Mock 的 AI 速记数据 (谐音 + 故事).
-    - [ ] 步骤 3: (Advanced MVP) 集成 Vercel AI SDK 调用 LLM (Claude/OpenAI) 生成真实文本.
-- [ ] **图片生成接口** (可选)
-    - [ ] 预留 `app/api/generate-image/route.ts` 接口骨架.
+- [x] **分析接口** (`app/api/analyze/route.ts`)
+    - [x] 实现 `POST` 请求处理逻辑.
+    - [x] 步骤 1: 读取本地 `roots.json` 匹配词根.
+    - [x] 步骤 2: (MVP) 返回 Mock 的 AI 速记数据 (谐音 + 故事).
+    - [x] 步骤 3: (Advanced MVP) 集成 Vercel AI SDK 调用 LLM (Claude/OpenAI) 生成真实文本.
+- [x] **图片生成接口** (可选)
+    - [x] 预留 `app/api/generate-image/route.ts` 接口骨架.
 
 ### 4. 前端开发 (UI/UX)
 - [ ] **通用组件**
-    - [ ] 导航栏 (`components/layout/Navbar`): 包含 WordDino Logo.
-    - [ ] 页脚 (`components/layout/Footer`).
+    - [x] 导航栏 (`components/layout/Navbar`): 包含 WordDino Logo.
+    - [ ] 页脚 (`components/layout/Footer`):包含 terms, policy, copyright
 - [ ] **首页 (Home)**
-    - [ ] Hero Section: 居中大搜索框 (`SearchInput` 组件).
-    - [ ] 交互: 输入单词后跳转至 `/word/[slug]`.
+    - [x] Hero Section: 居中大搜索框 (`SearchInput` 组件).
+    - [x] 交互: 输入单词后跳转至 `/word/[slug]`.
 - [ ] **结果页 (Result)**
-    - [ ] 布局: `SplitLayout` (左侧树，右侧卡片).
-    - [ ] **组件 A: 词根树 (`RootTreeVisualizer`)**: 使用 Flex/SVG 简单展示父子关系.
-    - [ ] **组件 B: 单词详情 (`WordHeader`)**: 音标、发音按钮.
+    - [x] 布局: `SplitLayout` (左侧树，右侧卡片).
+    - [x] **组件 A: 词根树 (`RootTreeVisualizer`)**: 使用 Flex/SVG 简单展示父子关系.
+    - [x] **组件 B: 单词详情 (`WordHeader`)**: 音标、发音按钮.
     - [ ] **组件 C: 速记卡 (`MnemonicCard`)**:
         - [ ] 正面: 单词核心信息.
         - [ ] 背面/下部: AI 生成的插画 (占位符或 Next/Image) + 谐音故事.
 
 ### 5. 部署与测试 (Deploy)
 - [ ] **本地测试**: 确保流程无 Bug，无 Hydration Error.
-- [ ] **SEO 配置**: 配置基本的 Metadata (Title, Description).
+- [x] **SEO 配置**: 配置基本的 Metadata (Title, Description).
 - [ ] **Vercel 部署**: 连接 GitHub 并自动部署.
 
 ---
@@ -97,7 +97,7 @@
 **目标**：多语言支持与商业化。
 
 - [ ] **国际化 (i18n)**
-    - [ ] 引入 `next-intl`.
+    - [x] 引入 `next-intl`.
     - [ ] 配置多语言路由 (`/es`, `/jp`, `/fr`).
 - [ ] **商业化**
     - [ ] 接入 Stripe 支付.

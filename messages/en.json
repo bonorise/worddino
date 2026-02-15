@@ -39,6 +39,21 @@
     "treeTitle": "Root Family Tree",
     "treeHint": "Zoom, drag and click nodes to navigate."
   },
+  "analyze": {
+    "loading": "Analyzing word structure...",
+    "error": "Failed to load analysis",
+    "retry": "Retry",
+    "sourceLabel": "Source",
+    "sourceMock": "Mock",
+    "sourceAi": "AI",
+    "explanation": "Explanation",
+    "rootsTitle": "Morpheme Breakdown",
+    "rootsFound": "Root match found",
+    "rootsNotFound": "No stable root match. Use mnemonic memory first.",
+    "examples": "Examples",
+    "mnemonicsTitle": "Mnemonic Cards",
+    "recommendation": "Recommended"
+  },
   "about": {
     "title": "Method",
     "content": "WordDino combines familiar anchors with unfamiliar words. Understand morphology first, then reinforce memory with homophones, visual scenes and stories."

@@ -1,0 +1,162 @@
+[
+  {
+    "text": "bio",
+    "kind": "root",
+    "meaning": {
+      "zhCN": "生命",
+      "en": "life"
+    },
+    "hint": "生物相关词常见词根",
+    "examples": ["biology", "biography", "antibiotic"]
+  },
+  {
+    "text": "ped",
+    "kind": "root",
+    "meaning": {
+      "zhCN": "脚，行走",
+      "en": "foot, walk"
+    },
+    "hint": "和步行、脚有关",
+    "examples": ["pedal", "pedestrian", "expedite"]
+  },
+  {
+    "text": "saur",
+    "kind": "root",
+    "meaning": {
+      "zhCN": "蜥蜴，恐龙",
+      "en": "lizard, dinosaur"
+    },
+    "hint": "恐龙词族常见片段",
+    "examples": ["dinosaur", "tyrannosaurus"]
+  },
+  {
+    "text": "spect",
+    "kind": "root",
+    "meaning": {
+      "zhCN": "看",
+      "en": "look"
+    },
+    "hint": "和观察、观看有关",
+    "examples": ["inspect", "respect", "spectator"]
+  },
+  {
+    "text": "port",
+    "kind": "root",
+    "meaning": {
+      "zhCN": "搬运",
+      "en": "carry"
+    },
+    "hint": "和运输、携带有关",
+    "examples": ["transport", "export", "portable"]
+  },
+  {
+    "text": "struct",
+    "kind": "root",
+    "meaning": {
+      "zhCN": "建造",
+      "en": "build"
+    },
+    "hint": "和结构、构造有关",
+    "examples": ["construct", "structure", "instruct"]
+  },
+  {
+    "text": "graph",
+    "kind": "root",
+    "meaning": {
+      "zhCN": "写，画",
+      "en": "write, draw"
+    },
+    "hint": "常见于图像/文字记录",
+    "examples": ["autograph", "telegraph", "graphic"]
+  },
+  {
+    "text": "trans",
+    "kind": "prefix",
+    "meaning": {
+      "zhCN": "穿过，转换",
+      "en": "across, change"
+    },
+    "hint": "常见前缀",
+    "examples": ["transport", "translate", "transform"]
+  },
+  {
+    "text": "pre",
+    "kind": "prefix",
+    "meaning": {
+      "zhCN": "在前，预先",
+      "en": "before"
+    },
+    "hint": "表示提前",
+    "examples": ["preview", "prepare", "predict"]
+  },
+  {
+    "text": "re",
+    "kind": "prefix",
+    "meaning": {
+      "zhCN": "再次，回",
+      "en": "again, back"
+    },
+    "hint": "表示重复或返回",
+    "examples": ["review", "return", "rewrite"]
+  },
+  {
+    "text": "sub",
+    "kind": "prefix",
+    "meaning": {
+      "zhCN": "在下，次级",
+      "en": "under, secondary"
+    },
+    "hint": "层级较低或下方",
+    "examples": ["subway", "submarine", "substandard"]
+  },
+  {
+    "text": "anti",
+    "kind": "prefix",
+    "meaning": {
+      "zhCN": "反对，对抗",
+      "en": "against"
+    },
+    "hint": "对立关系",
+    "examples": ["antivirus", "antibiotic", "antisocial"]
+  },
+  {
+    "text": "tion",
+    "kind": "suffix",
+    "meaning": {
+      "zhCN": "动作或结果（名词后缀）",
+      "en": "action/result noun suffix"
+    },
+    "hint": "常见名词结尾",
+    "examples": ["action", "translation", "construction"]
+  },
+  {
+    "text": "ment",
+    "kind": "suffix",
+    "meaning": {
+      "zhCN": "结果，过程（名词后缀）",
+      "en": "result/process noun suffix"
+    },
+    "hint": "常见抽象名词后缀",
+    "examples": ["movement", "development", "agreement"]
+  },
+  {
+    "text": "able",
+    "kind": "suffix",
+    "meaning": {
+      "zhCN": "能够...的",
+      "en": "capable of"
+    },
+    "hint": "形容词后缀",
+    "examples": ["portable", "comfortable", "readable"]
+  },
+  {
+    "text": "ous",
+    "kind": "suffix",
+    "meaning": {
+      "zhCN": "充满...的",
+      "en": "full of"
+    },
+    "hint": "常见形容词后缀",
+    "examples": ["dangerous", "famous", "curious"]
+  }
+]

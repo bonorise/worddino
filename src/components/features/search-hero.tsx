@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { normalizeSlug } from "@/lib/slug";
 import type { LocaleCode } from "@/lib/types";
+import type { AnalyzeApiResponse, AnalyzeSuccessResponse } from "@/types";
 
 interface SearchHeroProps {
   locale: LocaleCode;
@@ -20,6 +21,7 @@ interface SearchHeroProps {
 }
 
 const sampleWords = ["transport", "inspect", "construct", "people", "portable"];
+const analysisStorageKey = (word: string) => `worddino:analysis:${word.toLowerCase()}`;
 
 export function SearchHero({
   locale,
@@ -32,13 +34,45 @@ export function SearchHero({
 }: SearchHeroProps) {
   const router = useRouter();
   const [value, setValue] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const navigate = (rawWord: string) => {
+  const navigate = async (rawWord: string) => {
+    let slug = "";
     try {
-      const slug = normalizeSlug(rawWord);
-      router.push(`/${locale}/word/${slug}`);
+      slug = normalizeSlug(rawWord);
     } catch {
       toast.error(locale === "zh-CN" ? "请输入有效英文单词" : "Please input a valid word");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ word: slug }),
+      });
+      const payload = (await response.json()) as AnalyzeApiResponse;
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.ok ? "analyze failed" : payload.message);
+      }
+
+      const analysis = (payload as AnalyzeSuccessResponse).data;
+      sessionStorage.setItem(analysisStorageKey(slug), JSON.stringify(analysis));
+      sessionStorage.setItem(
+        analysisStorageKey(analysis.normalizedWord),
+        JSON.stringify(analysis),
+      );
+
+      router.push(`/${locale}/word/${analysis.normalizedWord}`);
+    } catch {
+      toast.error(locale === "zh-CN" ? "查询失败，请稍后再试" : "Analyze failed, please retry");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -55,7 +89,7 @@ export function SearchHero({
           className="flex flex-col gap-3 sm:flex-row"
           onSubmit={(event) => {
             event.preventDefault();
-            navigate(value);
+            void navigate(value);
           }}
         >
           <Input
@@ -64,8 +98,17 @@ export function SearchHero({
             placeholder={placeholder}
             className="h-12 rounded-xl bg-background/95"
           />
-          <Button type="submit" size="lg" className="h-12 rounded-xl px-6">
-            <Search className="h-4 w-4" />
+          <Button
+            type="submit"
+            size="lg"
+            className="h-12 rounded-xl px-6"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Search className="h-4 w-4" />
+            )}
             {cta}
           </Button>
         </form>
@@ -79,7 +122,8 @@ export function SearchHero({
                 size="sm"
                 variant="secondary"
                 className="rounded-full"
-                onClick={() => navigate(word)}
+                onClick={() => void navigate(word)}
+                disabled={isSubmitting}
               >
                 {word}
               </Button>

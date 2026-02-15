@@ -1,12 +1,10 @@
 import type { GeneratedWord } from "@/lib/ai/schema";
-import { getSeedMorphemes } from "@/lib/data/morphemes";
 import { prisma } from "@/lib/prisma";
 import type {
   ExampleItem,
   FamilyItem,
   LocalizedText,
   Mnemonics,
-  MorphemeItem,
   VoteValue,
   WordDetail,
 } from "@/lib/types";
@@ -30,17 +28,6 @@ const defaultMnemonics: Mnemonics = {
 const memoryWords = new Map<string, Omit<WordDetail, "userVote">>();
 const memoryVotes = new Map<string, Map<string, VoteValue>>();
 const memoryGeneratingAt = new Map<string, number>();
-const memoryMorphemes = new Map<string, MorphemeItem>(
-  getSeedMorphemes().map((item) => [
-    item.text,
-    {
-      text: item.text,
-      kind: item.kind,
-      meaning: item.meaning,
-      pronunciationHint: item.pronunciationHint,
-    },
-  ]),
-);
 
 const dbEnabled = Boolean(process.env.DATABASE_URL);
 

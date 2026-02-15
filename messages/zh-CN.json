@@ -39,6 +39,21 @@
     "treeTitle": "词根家族树",
     "treeHint": "支持缩放、拖拽，点击节点可跳转。"
   },
+  "analyze": {
+    "loading": "正在分析单词结构...",
+    "error": "结果加载失败",
+    "retry": "重试",
+    "sourceLabel": "数据来源",
+    "sourceMock": "Mock",
+    "sourceAi": "AI",
+    "explanation": "解释",
+    "rootsTitle": "词根拆解",
+    "rootsFound": "已匹配词根",
+    "rootsNotFound": "未匹配到稳定词根，建议优先使用助记法。",
+    "examples": "示例词",
+    "mnemonicsTitle": "助记卡片",
+    "recommendation": "推荐"
+  },
   "about": {
     "title": "学习方法",
     "content": "WordDino 使用“熟悉 + 未知”的记忆方式。先用词根词缀理解结构，再借助谐音、画面和故事建立记忆锚点。"
