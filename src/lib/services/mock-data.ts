@@ -1,4 +1,9 @@
-import type { MnemonicCardData, RootDefinition, WordAnalysisResult } from "@/types";
+import type {
+  MnemonicCardData,
+  MorphemeParseCandidate,
+  RootDefinition,
+  WordAnalysisResult,
+} from "@/types";
 
 const RANDOM_DELAY_MIN = 350;
 const RANDOM_DELAY_MAX = 900;
@@ -65,6 +70,7 @@ export async function getMockAnalysis(
   word: string,
   normalizedWord: string,
   matchedRoots: RootDefinition[],
+  parseCandidates: MorphemeParseCandidate[],
 ): Promise<WordAnalysisResult> {
   await wait(randomDelay());
 
@@ -76,6 +82,7 @@ export async function getMockAnalysis(
     normalizedWord,
     rootFound: hasRoot,
     matchedRoots,
+    parseCandidates,
     mnemonicCards,
     recommendedType: hasRoot ? "story" : "homophone",
     explanation: hasRoot

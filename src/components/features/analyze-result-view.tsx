@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MorphemeParseTree } from "@/components/features/morpheme-parse-tree";
 import type { LocaleCode } from "@/lib/types";
 import type { AnalyzeApiResponse, AnalyzeSuccessResponse, WordAnalysisResult } from "@/types";
 
@@ -22,6 +23,9 @@ interface AnalyzeResultLabels {
   rootsTitle: string;
   rootsFound: string;
   rootsNotFound: string;
+  parseTreeTitle: string;
+  parseTreeHint: string;
+  parseTreeEmpty: string;
   examples: string;
   mnemonicsTitle: string;
   recommendation: string;
@@ -37,11 +41,17 @@ function getLocalizedText(locale: LocaleCode, zhCN: string, en: string) {
   return locale === "zh-CN" ? zhCN : en;
 }
 
+function normalizeAnalysisPayload(payload: WordAnalysisResult): WordAnalysisResult {
+  return {
+    ...payload,
+    parseCandidates: Array.isArray(payload.parseCandidates) ? payload.parseCandidates : [],
+  };
+}
+
 export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewProps) {
   const [data, setData] = useState<WordAnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-
   const sourceText = useMemo(() => {
     if (!data) {
       return labels.sourceMock;
@@ -56,7 +66,7 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
 
       const cached = sessionStorage.getItem(analysisStorageKey(word));
       if (cached) {
-        const parsed = JSON.parse(cached) as WordAnalysisResult;
+        const parsed = normalizeAnalysisPayload(JSON.parse(cached) as WordAnalysisResult);
         if (parsed.normalizedWord === word.toLowerCase()) {
           setData(parsed);
           setIsLoading(false);
@@ -77,7 +87,7 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
         throw new Error(payload.ok ? "analyze failed" : payload.message);
       }
 
-      const analysis = (payload as AnalyzeSuccessResponse).data;
+      const analysis = normalizeAnalysisPayload((payload as AnalyzeSuccessResponse).data);
       setData(analysis);
       sessionStorage.setItem(analysisStorageKey(word), JSON.stringify(analysis));
       sessionStorage.setItem(
@@ -151,44 +161,55 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-        <Card>
-          <CardHeader>
-            <CardTitle>{labels.rootsTitle}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {data.rootFound ? (
-              <>
-                <Badge>{labels.rootsFound}</Badge>
-                {data.matchedRoots.map((root) => (
-                  <div key={`${root.kind}-${root.text}`} className="rounded-lg border border-border p-3">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold">{root.text}</span>
-                      <Badge variant="outline">{root.kind}</Badge>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {getLocalizedText(locale, root.meaning.zhCN, root.meaning.en)}
-                    </p>
-                    {root.hint ? (
-                      <p className="mt-1 text-xs text-muted-foreground">{root.hint}</p>
-                    ) : null}
-                    {root.examples.length > 0 ? (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        <span className="text-xs text-muted-foreground">{labels.examples}:</span>
-                        {root.examples.map((item) => (
-                          <Badge key={item} variant="secondary">
-                            {item}
-                          </Badge>
-                        ))}
+        <div className="space-y-5">
+          <MorphemeParseTree
+            locale={locale}
+            word={data.normalizedWord}
+            title={labels.parseTreeTitle}
+            hint={labels.parseTreeHint}
+            empty={labels.parseTreeEmpty}
+            candidates={data.parseCandidates}
+          />
+
+          <Card>
+            <CardHeader>
+              <CardTitle>{labels.rootsTitle}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {data.rootFound ? (
+                <>
+                  <Badge>{labels.rootsFound}</Badge>
+                  {data.matchedRoots.map((root) => (
+                    <div key={`${root.kind}-${root.text}`} className="rounded-lg border border-border p-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold">{root.text}</span>
+                        <Badge variant="outline">{root.kind}</Badge>
                       </div>
-                    ) : null}
-                  </div>
-                ))}
-              </>
-            ) : (
-              <Badge variant="outline">{labels.rootsNotFound}</Badge>
-            )}
-          </CardContent>
-        </Card>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {getLocalizedText(locale, root.meaning.zhCN, root.meaning.en)}
+                      </p>
+                      {root.hint ? (
+                        <p className="mt-1 text-xs text-muted-foreground">{root.hint}</p>
+                      ) : null}
+                      {root.examples.length > 0 ? (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          <span className="text-xs text-muted-foreground">{labels.examples}:</span>
+                          {root.examples.map((item) => (
+                            <Badge key={item} variant="secondary">
+                              {item}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <Badge variant="outline">{labels.rootsNotFound}</Badge>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         <Card>
           <CardHeader>

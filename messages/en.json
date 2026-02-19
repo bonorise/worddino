@@ -8,6 +8,11 @@
     "about": "Method",
     "privacy": "Privacy"
   },
+  "footer": {
+    "about": "Method",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
   "home": {
     "title": "Learn words like a language archaeologist",
     "subtitle": "Morpheme breakdown, memorable stories and a root family tree in one flow.",
@@ -50,6 +55,9 @@
     "rootsTitle": "Morpheme Breakdown",
     "rootsFound": "Root match found",
     "rootsNotFound": "No stable root match. Use mnemonic memory first.",
+    "parseTreeTitle": "Morpheme Parse Tree",
+    "parseTreeHint": "Shows feasible decompositions across prefixes, roots and suffixes.",
+    "parseTreeEmpty": "No stable full-word decomposition was found with the current morpheme library.",
     "examples": "Examples",
     "mnemonicsTitle": "Mnemonic Cards",
     "recommendation": "Recommended"
@@ -61,5 +69,9 @@
   "privacy": {
     "title": "Privacy",
     "content": "No plaintext IP is stored. Anonymous votes are deduplicated via salted hash on random visitor identity, with minimal logging."
+  },
+  "terms": {
+    "title": "Terms",
+    "content": "WordDino offers learning assistance only. AI-generated content may be inaccurate and should be verified with trusted dictionaries. Use is at your own discretion."
   }
 }

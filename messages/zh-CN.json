@@ -8,6 +8,11 @@
     "about": "方法说明",
     "privacy": "隐私"
   },
+  "footer": {
+    "about": "方法说明",
+    "privacy": "隐私",
+    "terms": "条款"
+  },
   "home": {
     "title": "像语言考古学家一样学单词",
     "subtitle": "词根拆解 + 助记故事 + 词根家族树，一次看懂、快速记牢。",
@@ -50,6 +55,9 @@
     "rootsTitle": "词根拆解",
     "rootsFound": "已匹配词根",
     "rootsNotFound": "未匹配到稳定词根，建议优先使用助记法。",
+    "parseTreeTitle": "词素组合树",
+    "parseTreeHint": "展示单词在前缀、词根、后缀维度的可行拆解方案。",
+    "parseTreeEmpty": "当前词库下未找到可覆盖整词的稳定组合。",
     "examples": "示例词",
     "mnemonicsTitle": "助记卡片",
     "recommendation": "推荐"
@@ -61,5 +69,9 @@
   "privacy": {
     "title": "隐私说明",
     "content": "我们不存储明文 IP。匿名投票基于随机访客标识与加盐哈希去重，并使用最小化日志策略。"
+  },
+  "terms": {
+    "title": "使用条款",
+    "content": "WordDino 仅提供学习辅助，AI 生成内容可能存在偏差，请以权威词典为准。使用即表示你理解并接受相关风险。"
   }
 }

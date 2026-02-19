@@ -1,8 +1,6 @@
 "use client";
 
-import { Languages } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 
 interface LanguageSwitcherProps {
   locale: "zh-CN" | "en";
@@ -11,18 +9,36 @@ interface LanguageSwitcherProps {
 export function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const targetLocale = locale === "zh-CN" ? "en" : "zh-CN";
-  const targetPath = pathname.replace(/^\/(zh-CN|en)(?=\/|$)/, `/${targetLocale}`);
+  const locales = ["zh-CN", "en"] as const;
+  const localeLabel: Record<(typeof locales)[number], string> = {
+    "zh-CN": "中",
+    en: "EN",
+  };
 
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={() => router.push(targetPath)}
-      aria-label="switch language"
-    >
-      <Languages className="h-4 w-4" />
-      {targetLocale}
-    </Button>
+    <div className="relative">
+      <select
+        value={locale}
+        onChange={(event) => {
+          const nextLocale = event.target.value;
+          const targetPath = pathname.replace(
+            /^\/(zh-CN|en)(?=\/|$)/,
+            `/${nextLocale}`,
+          );
+          router.push(targetPath);
+        }}
+        aria-label="switch language"
+        className="h-8 appearance-none bg-transparent pr-5 text-xs font-semibold tracking-widest text-foreground/70 transition-colors hover:text-foreground focus:outline-none"
+      >
+        {locales.map((item) => (
+          <option key={item} value={item}>
+            {localeLabel[item]}
+          </option>
+        ))}
+      </select>
+      <span className="pointer-events-none absolute inset-y-0 right-1 flex items-center text-[10px] text-foreground/50">
+        ▾
+      </span>
+    </div>
   );
 }

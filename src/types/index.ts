@@ -9,6 +9,17 @@ export interface RootDefinition {
   examples: string[];
 }
 
+export interface MorphemeCandidateNode extends RootDefinition {
+  start: number;
+  end: number;
+}
+
+export interface MorphemeParseCandidate {
+  formula: string;
+  score: number;
+  nodes: MorphemeCandidateNode[];
+}
+
 export interface MnemonicCardData {
   type: "homophone" | "story" | "image";
   title: string;
@@ -21,6 +32,7 @@ export interface WordAnalysisResult {
   normalizedWord: string;
   rootFound: boolean;
   matchedRoots: RootDefinition[];
+  parseCandidates: MorphemeParseCandidate[];
   mnemonicCards: MnemonicCardData[];
   recommendedType: "homophone" | "story" | "image";
   explanation: {
