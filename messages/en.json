@@ -49,18 +49,16 @@
     "error": "Failed to load analysis",
     "retry": "Retry",
     "sourceLabel": "Source",
-    "sourceMock": "Mock",
-    "sourceAi": "AI",
+    "sourceGemini": "Gemini",
     "explanation": "Explanation",
-    "rootsTitle": "Morpheme Breakdown",
-    "rootsFound": "Root match found",
-    "rootsNotFound": "No stable root match. Use mnemonic memory first.",
-    "parseTreeTitle": "Morpheme Parse Tree",
-    "parseTreeHint": "Shows feasible decompositions across prefixes, roots and suffixes.",
-    "parseTreeEmpty": "No stable full-word decomposition was found with the current morpheme library.",
-    "examples": "Examples",
+    "morphemeTitle": "Morpheme Breakdown",
+    "morphemeFallback": "This word is better learned as a whole instead of forcing a morpheme split.",
     "mnemonicsTitle": "Mnemonic Cards",
-    "recommendation": "Recommended"
+    "recommendation": "Recommended",
+    "examplesTitle": "Examples",
+    "familyTitle": "Word Family Graph",
+    "familyHint": "Zoom, drag, and click a related word to continue exploring.",
+    "familyEmpty": "No related family words were returned for this word."
   },
   "about": {
     "title": "Method",
@@ -68,7 +66,7 @@
   },
   "privacy": {
     "title": "Privacy",
-    "content": "No plaintext IP is stored. Anonymous votes are deduplicated via salted hash on random visitor identity, with minimal logging."
+    "content": "This launch version requires no login and does not store query results in a database. Session cache stays in your browser, and the server keeps only minimal runtime logs."
   },
   "terms": {
     "title": "Terms",

@@ -1,34 +1,33 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, RefreshCw, Sparkles } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { AlertTriangle, BookOpenText, RefreshCw, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MorphemeParseTree } from "@/components/features/morpheme-parse-tree";
+import { WordFamilyGraph } from "@/components/features/word-family-graph";
 import type { LocaleCode } from "@/lib/types";
 import type { AnalyzeApiResponse, AnalyzeSuccessResponse, WordAnalysisResult } from "@/types";
 
-const analysisStorageKey = (word: string) => `worddino:analysis:${word.toLowerCase()}`;
+const analysisStorageKey = (locale: LocaleCode, word: string) =>
+  `worddino:analysis:${locale}:${word.toLowerCase()}`;
 
 interface AnalyzeResultLabels {
   loading: string;
   error: string;
   retry: string;
   sourceLabel: string;
-  sourceMock: string;
-  sourceAi: string;
+  sourceGemini: string;
   explanation: string;
-  rootsTitle: string;
-  rootsFound: string;
-  rootsNotFound: string;
-  parseTreeTitle: string;
-  parseTreeHint: string;
-  parseTreeEmpty: string;
-  examples: string;
+  morphemeTitle: string;
+  morphemeFallback: string;
   mnemonicsTitle: string;
   recommendation: string;
+  examplesTitle: string;
+  familyTitle: string;
+  familyHint: string;
+  familyEmpty: string;
 }
 
 interface AnalyzeResultViewProps {
@@ -37,37 +36,20 @@ interface AnalyzeResultViewProps {
   labels: AnalyzeResultLabels;
 }
 
-function getLocalizedText(locale: LocaleCode, zhCN: string, en: string) {
-  return locale === "zh-CN" ? zhCN : en;
-}
-
-function normalizeAnalysisPayload(payload: WordAnalysisResult): WordAnalysisResult {
-  return {
-    ...payload,
-    parseCandidates: Array.isArray(payload.parseCandidates) ? payload.parseCandidates : [],
-  };
-}
-
 export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewProps) {
   const [data, setData] = useState<WordAnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const sourceText = useMemo(() => {
-    if (!data) {
-      return labels.sourceMock;
-    }
-    return data.source === "ai" ? labels.sourceAi : labels.sourceMock;
-  }, [data, labels.sourceAi, labels.sourceMock]);
 
   const fetchAnalysis = useCallback(async () => {
     try {
       setIsLoading(true);
       setHasError(false);
 
-      const cached = sessionStorage.getItem(analysisStorageKey(word));
+      const cached = sessionStorage.getItem(analysisStorageKey(locale, word));
       if (cached) {
-        const parsed = normalizeAnalysisPayload(JSON.parse(cached) as WordAnalysisResult);
-        if (parsed.normalizedWord === word.toLowerCase()) {
+        const parsed = JSON.parse(cached) as WordAnalysisResult;
+        if (parsed.normalizedWord === word.toLowerCase() && parsed.locale === locale) {
           setData(parsed);
           setIsLoading(false);
           return;
@@ -79,7 +61,7 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ word }),
+        body: JSON.stringify({ word, locale }),
       });
       const payload = (await response.json()) as AnalyzeApiResponse;
 
@@ -87,11 +69,11 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
         throw new Error(payload.ok ? "analyze failed" : payload.message);
       }
 
-      const analysis = normalizeAnalysisPayload((payload as AnalyzeSuccessResponse).data);
+      const analysis = (payload as AnalyzeSuccessResponse).data;
       setData(analysis);
-      sessionStorage.setItem(analysisStorageKey(word), JSON.stringify(analysis));
+      sessionStorage.setItem(analysisStorageKey(locale, word), JSON.stringify(analysis));
       sessionStorage.setItem(
-        analysisStorageKey(analysis.normalizedWord),
+        analysisStorageKey(locale, analysis.normalizedWord),
         JSON.stringify(analysis),
       );
       setIsLoading(false);
@@ -99,7 +81,7 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
       setHasError(true);
       setIsLoading(false);
     }
-  }, [word]);
+  }, [locale, word]);
 
   useEffect(() => {
     void fetchAnalysis();
@@ -146,7 +128,7 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
           <div className="flex flex-wrap items-center justify-between gap-3">
             <CardTitle className="font-serif text-3xl">{data.normalizedWord}</CardTitle>
             <Badge variant="secondary">
-              {labels.sourceLabel}: {sourceText}
+              {labels.sourceLabel}: {labels.sourceGemini}
             </Badge>
           </div>
         </CardHeader>
@@ -154,89 +136,97 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
           <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
             {labels.explanation}
           </p>
-          <p className="leading-7 text-muted-foreground">
-            {getLocalizedText(locale, data.explanation.zhCN, data.explanation.en)}
-          </p>
+          <p className="leading-7 text-muted-foreground">{data.explanation}</p>
         </CardContent>
       </Card>
 
-      <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+      <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="space-y-5">
-          <MorphemeParseTree
-            locale={locale}
-            word={data.normalizedWord}
-            title={labels.parseTreeTitle}
-            hint={labels.parseTreeHint}
-            empty={labels.parseTreeEmpty}
-            candidates={data.parseCandidates}
-          />
+          <Card>
+            <CardHeader>
+              <CardTitle>{labels.morphemeTitle}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {data.decomposable && data.morphemes.length > 0 ? (
+                data.morphemes.map((morpheme) => (
+                  <div
+                    key={`${morpheme.kind}-${morpheme.text}`}
+                    className="rounded-lg border border-border bg-card/70 p-3"
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-semibold">{morpheme.text}</span>
+                      <Badge variant={morpheme.kind === "root" ? "default" : "outline"}>
+                        {morpheme.kind}
+                      </Badge>
+                    </div>
+                    <p className="mt-2 text-sm text-muted-foreground">{morpheme.meaning}</p>
+                  </div>
+                ))
+              ) : (
+                <Badge variant="outline">{labels.morphemeFallback}</Badge>
+              )}
+            </CardContent>
+          </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>{labels.rootsTitle}</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpenText className="h-4 w-4" />
+                {labels.examplesTitle}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {data.rootFound ? (
-                <>
-                  <Badge>{labels.rootsFound}</Badge>
-                  {data.matchedRoots.map((root) => (
-                    <div key={`${root.kind}-${root.text}`} className="rounded-lg border border-border p-3">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold">{root.text}</span>
-                        <Badge variant="outline">{root.kind}</Badge>
-                      </div>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {getLocalizedText(locale, root.meaning.zhCN, root.meaning.en)}
-                      </p>
-                      {root.hint ? (
-                        <p className="mt-1 text-xs text-muted-foreground">{root.hint}</p>
-                      ) : null}
-                      {root.examples.length > 0 ? (
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          <span className="text-xs text-muted-foreground">{labels.examples}:</span>
-                          {root.examples.map((item) => (
-                            <Badge key={item} variant="secondary">
-                              {item}
-                            </Badge>
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
-                  ))}
-                </>
+              {data.examples.length > 0 ? (
+                data.examples.map((example) => (
+                  <p
+                    key={example}
+                    className="rounded-lg border border-border bg-card/70 px-3 py-2 text-sm text-muted-foreground"
+                  >
+                    {example}
+                  </p>
+                ))
               ) : (
-                <Badge variant="outline">{labels.rootsNotFound}</Badge>
+                <p className="text-sm text-muted-foreground">{labels.morphemeFallback}</p>
               )}
             </CardContent>
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4" />
-              {labels.mnemonicsTitle}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {data.mnemonicCards.map((item) => (
-              <div
-                key={item.type}
-                className="rounded-xl border border-border bg-card/80 p-3 transition-colors hover:bg-muted/30"
-              >
-                <div className="mb-1 flex items-center justify-between gap-2">
-                  <h3 className="font-medium">{item.title}</h3>
-                  {item.type === data.recommendedType ? (
-                    <Badge>{labels.recommendation}</Badge>
-                  ) : null}
+        <div className="space-y-5">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                {labels.mnemonicsTitle}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {data.mnemonics.map((item) => (
+                <div
+                  key={`${item.type}-${item.title}`}
+                  className="rounded-xl border border-border bg-card/80 p-3 transition-colors hover:bg-muted/30"
+                >
+                  <div className="mb-1 flex items-center justify-between gap-2">
+                    <h3 className="font-medium">{item.title}</h3>
+                    {item.type === data.recommendedType ? (
+                      <Badge>{labels.recommendation}</Badge>
+                    ) : null}
+                  </div>
+                  <p className="text-sm leading-7 text-muted-foreground">{item.content}</p>
                 </div>
-                <p className="text-sm leading-7 text-muted-foreground">
-                  {getLocalizedText(locale, item.contentZhCN, item.contentEn)}
-                </p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+              ))}
+            </CardContent>
+          </Card>
+
+          <WordFamilyGraph
+            locale={locale}
+            title={labels.familyTitle}
+            hint={labels.familyHint}
+            empty={labels.familyEmpty}
+            word={data.normalizedWord}
+            familyWords={data.familyWords}
+          />
+        </div>
       </div>
     </div>
   );

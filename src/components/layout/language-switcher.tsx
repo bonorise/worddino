@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
 
 interface LanguageSwitcherProps {
@@ -25,7 +26,7 @@ export function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
             /^\/(zh-CN|en)(?=\/|$)/,
             `/${nextLocale}`,
           );
-          router.push(targetPath);
+          router.push(targetPath as Route);
         }}
         aria-label="switch language"
         className="h-8 appearance-none bg-transparent pr-5 text-xs font-semibold tracking-widest text-foreground/70 transition-colors hover:text-foreground focus:outline-none"

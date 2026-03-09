@@ -5,13 +5,14 @@ import type { AnalyzeErrorResponse, AnalyzeSuccessResponse } from "@/types";
 
 const requestSchema = z.object({
   word: z.string().trim().min(1),
+  locale: z.enum(["zh-CN", "en"]),
 });
 
 export async function POST(request: Request) {
   try {
     const json = (await request.json()) as unknown;
     const payload = requestSchema.parse(json);
-    const data = await analyzeWord(payload.word);
+    const data = await analyzeWord(payload.word, payload.locale);
 
     return NextResponse.json<AnalyzeSuccessResponse>({
       ok: true,

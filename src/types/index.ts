@@ -1,45 +1,29 @@
-export interface RootDefinition {
+export type AnalyzeLocale = "zh-CN" | "en";
+
+export interface MorphemeItem {
   text: string;
   kind: "prefix" | "root" | "suffix";
-  meaning: {
-    zhCN: string;
-    en: string;
-  };
-  hint?: string;
-  examples: string[];
-}
-
-export interface MorphemeCandidateNode extends RootDefinition {
-  start: number;
-  end: number;
-}
-
-export interface MorphemeParseCandidate {
-  formula: string;
-  score: number;
-  nodes: MorphemeCandidateNode[];
+  meaning: string;
 }
 
 export interface MnemonicCardData {
   type: "homophone" | "story" | "image";
   title: string;
-  contentZhCN: string;
-  contentEn: string;
+  content: string;
 }
 
 export interface WordAnalysisResult {
   word: string;
   normalizedWord: string;
-  rootFound: boolean;
-  matchedRoots: RootDefinition[];
-  parseCandidates: MorphemeParseCandidate[];
-  mnemonicCards: MnemonicCardData[];
+  locale: AnalyzeLocale;
+  decomposable: boolean;
+  explanation: string;
+  morphemes: MorphemeItem[];
+  mnemonics: MnemonicCardData[];
   recommendedType: "homophone" | "story" | "image";
-  explanation: {
-    zhCN: string;
-    en: string;
-  };
-  source: "mock" | "ai";
+  examples: string[];
+  familyWords: string[];
+  source: "gemini";
 }
 
 export interface AnalyzeSuccessResponse {

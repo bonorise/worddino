@@ -11,7 +11,7 @@
 ---
 
 ## 🟢 Phase 0: The "Spark" MVP (极简验证期)
-**目标**：跑通“查词 -> 词根拆解 -> 图像助记”的核心闭环。无数据库，纯静态数据 + AI 生成。
+**目标**：跑通“查词 -> Gemini 分析 -> 助记与同族词关系图展示”的核心闭环。无数据库，纯 AI 生成。
 
 ### 1. 项目初始化 (Initialization)
 - [x] **脚手架搭建**
@@ -24,23 +24,20 @@
     - [x] 确认 `agent.md`已生效.
 
 ### 2. 数据层 (Data Core - No DB)
-- [x] **静态词根库**
-    - [x] 创建 `lib/data/roots.json` (包含 10-20 个最常见的示例词根，如 `saur`, `ped`, `bio`).
-    - [x] 定义 TypeScript 接口 (`types/index.ts`):
-        - [x] `RootDefinition`
-        - [x] `WordAnalysisResult`
-        - [x] `MnemonicCardData`
-- [x] **Mock 服务**
-    - [x] 创建 `lib/services/mock-data.ts` 用于模拟 AI 返回的延迟和数据结构.
+- [x] **无数据库运行模式**
+    - [x] 移除 Prisma/投票/生成状态等数据库运行链路.
+    - [x] 查询结果改为浏览器 `sessionStorage` 会话缓存.
+- [x] **Gemini 结构化输出**
+    - [x] 定义 Gemini 返回的统一结构和校验规则.
+    - [x] 接口按 `locale` 返回当前语言内容.
 
 ### 3. 后端逻辑 (Serverless API)
 - [x] **分析接口** (`app/api/analyze/route.ts`)
     - [x] 实现 `POST` 请求处理逻辑.
-    - [x] 步骤 1: 读取本地 `roots.json` 匹配词根.
-    - [x] 步骤 2: (MVP) 返回 Mock 的 AI 速记数据 (谐音 + 故事).
-    - [x] 步骤 3: (Advanced MVP) 集成 Vercel AI SDK 调用 LLM (Claude/OpenAI) 生成真实文本.
+    - [x] 校验 `word + locale`.
+    - [x] 切换为 Google Gemini 结构化输出.
 - [x] **图片生成接口** (可选)
-    - [x] 预留 `app/api/generate-image/route.ts` 接口骨架.
+    - [x] 保留 `app/api/generate-image/route.ts` 接口骨架，并在当前版本显式禁用.
 
 ### 4. 前端开发 (UI/UX)
 - [ ] **通用组件**
@@ -48,19 +45,21 @@
     - [ ] 页脚 (`components/layout/Footer`):包含 terms, policy, copyright
 - [ ] **首页 (Home)**
     - [x] Hero Section: 居中大搜索框 (`SearchInput` 组件).
-    - [x] 交互: 输入单词后跳转至 `/word/[slug]`.
-- [ ] **结果页 (Result)**
-    - [x] 布局: `SplitLayout` (左侧树，右侧卡片).
-    - [x] **组件 A: 词根树 (`RootTreeVisualizer`)**: 使用 Flex/SVG 简单展示父子关系.
-    - [x] **组件 B: 单词详情 (`WordHeader`)**: 音标、发音按钮.
-    - [ ] **组件 C: 速记卡 (`MnemonicCard`)**:
-        - [ ] 正面: 单词核心信息.
-        - [ ] 背面/下部: AI 生成的插画 (占位符或 Next/Image) + 谐音故事.
+    - [x] 交互: 输入单词后按当前语言跳转到 `/[locale]/word/[slug]`.
+- [x] **结果页 (Result)**
+    - [x] 展示解释、词根拆解、助记卡片、例句、同族词关系图.
+    - [x] 错误状态和重试状态可用.
+    - [x] 保留 `zh-CN` / `en` 双语路由.
 
 ### 5. 部署与测试 (Deploy)
-- [ ] **本地测试**: 确保流程无 Bug，无 Hydration Error.
+- [x] **本地测试**: 单测、e2e 与本地 `build` 已通过.
 - [x] **SEO 配置**: 配置基本的 Metadata (Title, Description).
-- [ ] **Vercel 部署**: 连接 GitHub 并自动部署.
+- [x] **Vercel 部署**: 已发布到 Vercel 生产环境.
+
+### 6. 当前待办
+- [ ] 完整双语内容润色（尤其英文文案）
+- [ ] 接入 Gemini 图片生成并展示
+- [ ] 清理旧的 OpenAI/Prisma 依赖与脚本
 
 ---
 

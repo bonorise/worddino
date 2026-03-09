@@ -11,10 +11,6 @@ export default async function PrivacyPage() {
       </CardHeader>
       <CardContent className="space-y-3 text-sm leading-7 text-muted-foreground">
         <p>{t("content")}</p>
-        <p>
-          Vote deduplication stores only salted hashes derived from anonymous visitor identifiers and
-          user-agent signals. No plaintext IP is persisted.
-        </p>
       </CardContent>
     </Card>
   );

@@ -3,6 +3,7 @@ import { z } from "zod";
 
 const imageRequestSchema = z.object({
   prompt: z.string().trim().min(6),
+  locale: z.enum(["zh-CN", "en"]).optional(),
 });
 
 interface GenerateImageResponse {
@@ -17,25 +18,16 @@ export async function POST(request: Request) {
   try {
     const body = imageRequestSchema.parse((await request.json()) as unknown);
 
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json<GenerateImageResponse>(
-        {
-          ok: false,
-          status: "disabled",
-          message:
-            "Image generation is disabled. Set OPENAI_API_KEY in .env to enable later.",
-        },
-        { status: 501 },
-      );
-    }
-
-    return NextResponse.json<GenerateImageResponse>({
-      ok: true,
-      status: "placeholder",
-      message: "Image API skeleton is ready. Real image generation will be implemented next.",
-      prompt: body.prompt,
-      imageUrl: null,
-    });
+    return NextResponse.json<GenerateImageResponse>(
+      {
+        ok: false,
+        status: "disabled",
+        message: "Image generation is not enabled in this launch version.",
+        prompt: body.prompt,
+        imageUrl: null,
+      },
+      { status: 501 },
+    );
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json<GenerateImageResponse>(
@@ -52,7 +44,7 @@ export async function POST(request: Request) {
       {
         ok: false,
         status: "disabled",
-        message: "Image API failed.",
+        message: "Image API is unavailable.",
       },
       { status: 500 },
     );

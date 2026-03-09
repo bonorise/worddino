@@ -21,7 +21,8 @@ interface SearchHeroProps {
 }
 
 const sampleWords = ["transport", "inspect", "construct", "people", "portable"];
-const analysisStorageKey = (word: string) => `worddino:analysis:${word.toLowerCase()}`;
+const analysisStorageKey = (locale: LocaleCode, word: string) =>
+  `worddino:analysis:${locale}:${word.toLowerCase()}`;
 
 export function SearchHero({
   locale,
@@ -53,7 +54,7 @@ export function SearchHero({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ word: slug }),
+        body: JSON.stringify({ word: slug, locale }),
       });
       const payload = (await response.json()) as AnalyzeApiResponse;
 
@@ -62,9 +63,9 @@ export function SearchHero({
       }
 
       const analysis = (payload as AnalyzeSuccessResponse).data;
-      sessionStorage.setItem(analysisStorageKey(slug), JSON.stringify(analysis));
+      sessionStorage.setItem(analysisStorageKey(locale, slug), JSON.stringify(analysis));
       sessionStorage.setItem(
-        analysisStorageKey(analysis.normalizedWord),
+        analysisStorageKey(locale, analysis.normalizedWord),
         JSON.stringify(analysis),
       );
 
