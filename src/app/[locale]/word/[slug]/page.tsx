@@ -1,8 +1,24 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { AnalyzeResultView } from "@/components/features/analyze-result-view";
 import { Card, CardContent } from "@/components/ui/card";
+import { buildCanonicalUrl } from "@/lib/site";
 import { InvalidSlugError, normalizeSlug } from "@/lib/slug";
 import type { LocaleCode } from "@/lib/types";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: LocaleCode; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+
+  return {
+    alternates: {
+      canonical: buildCanonicalUrl(`/${locale}/word/${normalizeSlug(slug)}`),
+    },
+  };
+}
 
 export default async function WordPage({
   params,

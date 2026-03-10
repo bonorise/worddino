@@ -1,6 +1,22 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SearchHero } from "@/components/features/search-hero";
+import { buildCanonicalUrl } from "@/lib/site";
 import type { LocaleCode } from "@/lib/types";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: LocaleCode }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    alternates: {
+      canonical: buildCanonicalUrl(`/${locale}`),
+    },
+  };
+}
 
 export default async function LocaleHomePage({
   params,

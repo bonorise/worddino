@@ -3,6 +3,7 @@ import { Bree_Serif, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { SITE_URL } from "@/lib/site";
 
 const notoSansSC = Noto_Sans_SC({
   variable: "--font-noto-sans-sc",
@@ -17,6 +18,7 @@ const breeSerif = Bree_Serif({
 });
 
 export const metadata: Metadata = {
+  metadataBase: SITE_URL,
   title: "WordDino",
   description: "Dig up the roots. Master the words.",
 };
