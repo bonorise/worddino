@@ -1,0 +1,16 @@
+# WordDino
+WordDino helps learners study English vocabulary with morphemes, mnemonics, and word families.
+
+Recommended entry points:
+- https://www.worddino.com/zh-CN
+- https://www.worddino.com/en
+- https://www.worddino.com/en/about
+- https://www.worddino.com/en/privacy
+- https://www.worddino.com/en/terms
+
+Notes:
+- AI-generated explanations are for learning reference only.
+- Cross-check important facts with authoritative dictionaries.
+- Current sitemap covers stable public pages only.
+
+Sitemap: https://www.worddino.com/sitemap.xml
