@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   buildCanonicalUrl,
+  buildRootMetadata,
   getGaMeasurementId,
   getGoogleSiteVerification,
   SITE_URL,
@@ -19,5 +20,12 @@ describe("site helpers", () => {
 
     expect(getGoogleSiteVerification()).toBe("verify-token");
     expect(getGaMeasurementId()).toBe("G-TEST1234");
+  });
+
+  it("builds root metadata with google verification", () => {
+    const metadata = buildRootMetadata("verify-token");
+
+    expect(metadata.metadataBase?.toString()).toBe("https://www.worddino.com/");
+    expect(metadata.verification?.google).toBe("verify-token");
   });
 });

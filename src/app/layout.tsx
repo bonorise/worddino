@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Bree_Serif, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics, shouldEnableGoogleAnalytics } from "@/components/analytics/google-analytics";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { SITE_URL } from "@/lib/site";
+import { buildRootMetadata, getGaMeasurementId } from "@/lib/site";
 
 const notoSansSC = Noto_Sans_SC({
   variable: "--font-noto-sans-sc",
@@ -17,17 +18,15 @@ const breeSerif = Bree_Serif({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: SITE_URL,
-  title: "WordDino",
-  description: "Dig up the roots. Master the words.",
-};
+export const metadata: Metadata = buildRootMetadata();
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaMeasurementId = getGaMeasurementId();
+
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body className={`${notoSansSC.variable} ${breeSerif.variable} antialiased`}>
@@ -35,6 +34,9 @@ export default function RootLayout({
           {children}
           <Toaster richColors closeButton />
         </ThemeProvider>
+        {shouldEnableGoogleAnalytics(gaMeasurementId) ? (
+          <GoogleAnalytics measurementId={gaMeasurementId!} />
+        ) : null}
       </body>
     </html>
   );
