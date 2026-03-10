@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Bree_Serif, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
-import { GoogleAnalytics, shouldEnableGoogleAnalytics } from "@/components/analytics/google-analytics";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { buildRootMetadata, getGaMeasurementId } from "@/lib/site";
@@ -34,9 +34,7 @@ export default function RootLayout({
           {children}
           <Toaster richColors closeButton />
         </ThemeProvider>
-        {shouldEnableGoogleAnalytics(gaMeasurementId) ? (
-          <GoogleAnalytics measurementId={gaMeasurementId!} />
-        ) : null}
+        {gaMeasurementId ? <GoogleAnalytics measurementId={gaMeasurementId} /> : null}
       </body>
     </html>
   );
