@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bree_Serif, Noto_Sans_SC } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -34,7 +35,11 @@ export default function RootLayout({
           {children}
           <Toaster richColors closeButton />
         </ThemeProvider>
-        {gaMeasurementId ? <GoogleAnalytics measurementId={gaMeasurementId} /> : null}
+        {gaMeasurementId ? (
+          <Suspense fallback={null}>
+            <GoogleAnalytics measurementId={gaMeasurementId} />
+          </Suspense>
+        ) : null}
       </body>
     </html>
   );
