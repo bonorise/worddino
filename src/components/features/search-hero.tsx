@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { Loader2, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getLocalizedAnalyzeErrorMessage } from "@/lib/analyze-error";
 import { normalizeSlug } from "@/lib/slug";
 import type { LocaleCode } from "@/lib/types";
 import type { AnalyzeApiResponse, AnalyzeSuccessResponse } from "@/types";
@@ -34,6 +36,7 @@ export function SearchHero({
   methodTip,
 }: SearchHeroProps) {
   const router = useRouter();
+  const tAnalyze = useTranslations("analyze");
   const [value, setValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,7 +45,7 @@ export function SearchHero({
     try {
       slug = normalizeSlug(rawWord);
     } catch {
-      toast.error(locale === "zh-CN" ? "请输入有效英文单词" : "Please input a valid word");
+      toast.error(tAnalyze("errors.INVALID_REQUEST"));
       return;
     }
 
@@ -59,7 +62,12 @@ export function SearchHero({
       const payload = (await response.json()) as AnalyzeApiResponse;
 
       if (!response.ok || !payload.ok) {
-        throw new Error(payload.ok ? "analyze failed" : payload.message);
+        if (!payload.ok) {
+          toast.error(getLocalizedAnalyzeErrorMessage(payload, tAnalyze));
+          return;
+        }
+
+        throw new Error("analyze failed");
       }
 
       const analysis = (payload as AnalyzeSuccessResponse).data;
@@ -71,7 +79,7 @@ export function SearchHero({
 
       router.push(`/${locale}/word/${analysis.normalizedWord}`);
     } catch {
-      toast.error(locale === "zh-CN" ? "查询失败，请稍后再试" : "Analyze failed, please retry");
+      toast.error(tAnalyze("errors.AI_UPSTREAM_ERROR"));
     } finally {
       setIsSubmitting(false);
     }

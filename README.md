@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WordDino
 
-## Getting Started
+WordDino 是一个面向英语单词学习的 Next.js 应用，核心流程是：
 
-First, run the development server:
+- 输入单词
+- 调用 `/api/analyze`
+- 由 Gemini 生成结构化分析结果
+- 在结果页展示解释、记忆锚点、词根拆解、助记卡片和同族词关系图
+
+## 本地启动
+
+先安装依赖：
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+复制环境变量并补全 Gemini 配置：
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+至少需要配置：
 
-## Learn More
+```dotenv
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL_TEXT=gemini-2.5-flash
+```
 
-To learn more about Next.js, take a look at the following resources:
+启动开发环境：
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+默认访问地址：
 
-## Deploy on Vercel
+- [http://localhost:3000](http://localhost:3000)
+- 中文首页：[http://localhost:3000/zh-CN](http://localhost:3000/zh-CN)
+- 英文首页：[http://localhost:3000/en](http://localhost:3000/en)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 关键环境变量
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `GEMINI_API_KEY`
+  用于 `/api/analyze` 调用 Gemini。生产环境必须配置。
+- `GEMINI_MODEL_TEXT`
+  可选，默认值为 `gemini-2.5-flash`。
+- `VOTE_HASH_SALT`
+  可选，用于投票或反滥用逻辑。
+- `GOOGLE_SITE_VERIFICATION`
+  可选，用于站点验证。
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID`
+  可选，用于 GA4。
+
+## 测试命令
+
+单元测试：
+
+```bash
+pnpm test
+```
+
+端到端测试：
+
+```bash
+pnpm test:e2e
+```
+
+只跑本次修复相关测试：
+
+```bash
+pnpm exec vitest run tests/unit/analyze-route-schema.test.ts tests/unit/analyzer.test.ts
+pnpm exec playwright test tests/e2e/search-flow.spec.ts
+```
+
+## 部署说明
+
+如果部署到 Vercel 或其他平台，生产环境必须配置 `GEMINI_API_KEY`。否则：
+
+- `/api/analyze` 会返回 `AI_CONFIG_ERROR`
+- 前端会显示“AI 服务配置异常，暂时无法分析”
+
+建议在部署平台同时配置：
+
+```dotenv
+GEMINI_API_KEY=...
+GEMINI_MODEL_TEXT=gemini-2.5-flash
+```

@@ -2,13 +2,19 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AlertTriangle, BookOpenText, RefreshCw, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WordFamilyGraph } from "@/components/features/word-family-graph";
+import { getLocalizedAnalyzeErrorMessage } from "@/lib/analyze-error";
 import type { LocaleCode } from "@/lib/types";
-import type { AnalyzeApiResponse, AnalyzeSuccessResponse, WordAnalysisResult } from "@/types";
+import type {
+  AnalyzeApiResponse,
+  AnalyzeSuccessResponse,
+  WordAnalysisResult,
+} from "@/types";
 
 const analysisStorageKey = (locale: LocaleCode, word: string) =>
   `worddino:analysis:${locale}:${word.toLowerCase()}`;
@@ -40,15 +46,21 @@ interface AnalyzeResultViewProps {
   labels: AnalyzeResultLabels;
 }
 
+interface AnalyzeErrorState {
+  message: string;
+  retryable: boolean;
+}
+
 export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewProps) {
+  const tAnalyze = useTranslations("analyze");
   const [data, setData] = useState<WordAnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  const [errorState, setErrorState] = useState<AnalyzeErrorState | null>(null);
 
   const fetchAnalysis = useCallback(async () => {
     try {
       setIsLoading(true);
-      setHasError(false);
+      setErrorState(null);
 
       const cached = sessionStorage.getItem(analysisStorageKey(locale, word));
       if (cached) {
@@ -70,11 +82,22 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
       const payload = (await response.json()) as AnalyzeApiResponse;
 
       if (!response.ok || !payload.ok) {
-        throw new Error(payload.ok ? "analyze failed" : payload.message);
+        if (!payload.ok) {
+          setData(null);
+          setErrorState({
+            message: getLocalizedAnalyzeErrorMessage(payload, tAnalyze),
+            retryable: payload.retryable,
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        throw new Error("analyze failed");
       }
 
       const analysis = (payload as AnalyzeSuccessResponse).data;
       setData(analysis);
+      setErrorState(null);
       sessionStorage.setItem(analysisStorageKey(locale, word), JSON.stringify(analysis));
       sessionStorage.setItem(
         analysisStorageKey(locale, analysis.normalizedWord),
@@ -82,10 +105,14 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
       );
       setIsLoading(false);
     } catch {
-      setHasError(true);
+      setData(null);
+      setErrorState({
+        message: tAnalyze("errors.AI_UPSTREAM_ERROR"),
+        retryable: true,
+      });
       setIsLoading(false);
     }
-  }, [locale, word]);
+  }, [locale, tAnalyze, word]);
 
   useEffect(() => {
     void fetchAnalysis();
@@ -106,7 +133,7 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
     );
   }
 
-  if (hasError || !data) {
+  if (errorState || !data) {
     return (
       <Card>
         <CardHeader>
@@ -115,11 +142,16 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
             {labels.error}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <Button variant="outline" onClick={() => void fetchAnalysis()}>
-            <RefreshCw className="h-4 w-4" />
-            {labels.retry}
-          </Button>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            {errorState?.message ?? tAnalyze("errors.AI_UPSTREAM_ERROR")}
+          </p>
+          {errorState?.retryable ? (
+            <Button variant="outline" onClick={() => void fetchAnalysis()}>
+              <RefreshCw className="h-4 w-4" />
+              {labels.retry}
+            </Button>
+          ) : null}
         </CardContent>
       </Card>
     );

@@ -1,5 +1,13 @@
 import { geminiAnalysisJsonSchema, geminiAnalysisSchema } from "@/lib/ai/gemini-schema";
+import { getGeminiConfig } from "@/lib/config/env";
 import { normalizeSlug } from "@/lib/slug";
+import {
+  AnalyzeAuthError,
+  AnalyzeRateLimitError,
+  AnalyzeResponseInvalidError,
+  AnalyzeServiceError,
+  AnalyzeUpstreamError,
+} from "@/lib/services/analyze-errors";
 import type { AnalyzeLocale, WordAnalysisResult } from "@/types";
 
 interface GeminiGenerateContentResponse {
@@ -10,18 +18,6 @@ interface GeminiGenerateContentResponse {
       }>;
     };
   }>;
-}
-
-function getGeminiApiKey(): string {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("Missing GEMINI_API_KEY");
-  }
-  return apiKey;
-}
-
-function getGeminiModel(): string {
-  return process.env.GEMINI_MODEL_TEXT ?? "gemini-2.5-flash";
 }
 
 function buildPrompt(word: string, locale: AnalyzeLocale): string {
@@ -57,44 +53,61 @@ function extractGeminiText(payload: GeminiGenerateContentResponse): string {
     .find((part) => part.length > 0);
 
   if (!text) {
-    throw new Error("Gemini returned no text content");
+    throw new AnalyzeResponseInvalidError();
   }
 
   return text;
 }
 
 async function requestGemini(word: string, locale: AnalyzeLocale) {
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${getGeminiModel()}:generateContent`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": getGeminiApiKey(),
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: buildPrompt(word, locale),
-              },
-            ],
-          },
-        ],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseJsonSchema: geminiAnalysisJsonSchema,
-        },
-      }),
-    },
-  );
+  const { apiKey, model } = getGeminiConfig();
+  let response: Response;
 
-  if (!response.ok) {
-    throw new Error(`Gemini request failed with status ${response.status}`);
+  try {
+    response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: buildPrompt(word, locale),
+                },
+              ],
+            },
+          ],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseJsonSchema: geminiAnalysisJsonSchema,
+          },
+        }),
+      },
+    );
+  } catch (error: unknown) {
+    throw new AnalyzeUpstreamError(undefined, error);
   }
 
-  return (await response.json()) as GeminiGenerateContentResponse;
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) {
+      throw new AnalyzeAuthError(response.status);
+    }
+    if (response.status === 429) {
+      throw new AnalyzeRateLimitError(response.status);
+    }
+    throw new AnalyzeUpstreamError(response.status);
+  }
+
+  try {
+    return (await response.json()) as GeminiGenerateContentResponse;
+  } catch (error: unknown) {
+    throw new AnalyzeResponseInvalidError(response.status, error);
+  }
 }
 
 export async function analyzeWord(
@@ -103,8 +116,17 @@ export async function analyzeWord(
 ): Promise<WordAnalysisResult> {
   const normalizedWord = normalizeSlug(word);
   const payload = await requestGemini(normalizedWord, locale);
-  const jsonText = extractGeminiText(payload);
-  const parsed = geminiAnalysisSchema.parse(JSON.parse(jsonText) as unknown);
+  let parsed: ReturnType<typeof geminiAnalysisSchema.parse>;
+
+  try {
+    const jsonText = extractGeminiText(payload);
+    parsed = geminiAnalysisSchema.parse(JSON.parse(jsonText) as unknown);
+  } catch (error: unknown) {
+    if (error instanceof AnalyzeServiceError) {
+      throw error;
+    }
+    throw new AnalyzeResponseInvalidError(undefined, error);
+  }
 
   return {
     word: normalizedWord,

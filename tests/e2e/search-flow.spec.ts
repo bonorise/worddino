@@ -97,3 +97,44 @@ test("zh-CN search flow hides memory anchors when api returns none", async ({ pa
   await expect(page.getByText("记忆锚点")).toHaveCount(0);
   await expect(page.getByText("故事助记")).toBeVisible();
 });
+
+test("zh-CN search flow shows upstream error toast", async ({ page }) => {
+  await page.route("**/api/analyze", async (route) => {
+    await route.fulfill({
+      status: 503,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: false,
+        code: "AI_UPSTREAM_ERROR",
+        message: "AI 服务暂时不可用，请稍后重试",
+        retryable: true,
+      }),
+    });
+  });
+
+  await page.goto("/zh-CN");
+  await page.getByRole("button", { name: "transport" }).click();
+
+  await expect(page).toHaveURL(/\/zh-CN$/);
+  await expect(page.getByText("AI 服务暂时不可用，请稍后重试")).toBeVisible();
+});
+
+test("zh-CN result page hides retry button for non-retryable config errors", async ({ page }) => {
+  await page.route("**/api/analyze", async (route) => {
+    await route.fulfill({
+      status: 500,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: false,
+        code: "AI_CONFIG_ERROR",
+        message: "AI 服务配置异常，暂时无法分析",
+        retryable: false,
+      }),
+    });
+  });
+
+  await page.goto("/zh-CN/word/transport");
+
+  await expect(page.getByText("AI 服务配置异常，暂时无法分析")).toBeVisible();
+  await expect(page.getByRole("button", { name: "重试" })).toHaveCount(0);
+});

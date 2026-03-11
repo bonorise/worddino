@@ -48,6 +48,14 @@
     "loading": "Analyzing word structure...",
     "error": "Failed to load analysis",
     "retry": "Retry",
+    "errors": {
+      "INVALID_REQUEST": "Please input a valid English word",
+      "AI_CONFIG_ERROR": "AI service is misconfigured and temporarily unavailable.",
+      "AI_AUTH_ERROR": "AI service authentication failed. Please try again later.",
+      "AI_RATE_LIMITED": "Too many requests right now. Please retry shortly.",
+      "AI_UPSTREAM_ERROR": "AI service is temporarily unavailable. Please try again later.",
+      "AI_RESPONSE_INVALID": "AI returned an invalid result. Please try again later."
+    },
     "sourceLabel": "Source",
     "sourceGemini": "Gemini",
     "explanation": "Explanation",

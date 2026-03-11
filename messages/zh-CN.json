@@ -48,6 +48,14 @@
     "loading": "正在分析单词结构...",
     "error": "结果加载失败",
     "retry": "重试",
+    "errors": {
+      "INVALID_REQUEST": "请输入有效英文单词",
+      "AI_CONFIG_ERROR": "AI 服务配置异常，暂时无法分析",
+      "AI_AUTH_ERROR": "AI 服务认证异常，请稍后再试",
+      "AI_RATE_LIMITED": "当前请求较多，请稍后重试",
+      "AI_UPSTREAM_ERROR": "AI 服务暂时不可用，请稍后重试",
+      "AI_RESPONSE_INVALID": "AI 返回结果异常，请稍后重试"
+    },
     "sourceLabel": "数据来源",
     "sourceGemini": "Gemini",
     "explanation": "解释",

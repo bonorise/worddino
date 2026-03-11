@@ -1,4 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  AnalyzeAuthError,
+  AnalyzeConfigError,
+  AnalyzeRateLimitError,
+  AnalyzeResponseInvalidError,
+  AnalyzeUpstreamError,
+} from "@/lib/services/analyze-errors";
 import { analyzeWord } from "@/lib/services/analyzer";
 
 const originalEnv = { ...process.env };
@@ -18,9 +25,96 @@ describe("analyzeWord", () => {
   it("throws when GEMINI_API_KEY is missing", async () => {
     delete process.env.GEMINI_API_KEY;
 
-    await expect(analyzeWord("transport", "zh-CN")).rejects.toThrow(
-      /GEMINI_API_KEY/,
+    await expect(analyzeWord("transport", "zh-CN")).rejects.toBeInstanceOf(
+      AnalyzeConfigError,
     );
+    await expect(analyzeWord("transport", "zh-CN")).rejects.toMatchObject({
+      code: "AI_CONFIG_ERROR",
+      status: 500,
+      retryable: false,
+    });
+  });
+
+  it("maps 401 responses to auth errors", async () => {
+    process.env.GEMINI_API_KEY = "test-gemini-key";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response("{}", { status: 401 })),
+    );
+
+    await expect(analyzeWord("transport", "en")).rejects.toBeInstanceOf(
+      AnalyzeAuthError,
+    );
+    await expect(analyzeWord("transport", "en")).rejects.toMatchObject({
+      code: "AI_AUTH_ERROR",
+      retryable: false,
+      upstreamStatus: 401,
+    });
+  });
+
+  it("maps 429 responses to rate limit errors", async () => {
+    process.env.GEMINI_API_KEY = "test-gemini-key";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response("{}", { status: 429 })),
+    );
+
+    await expect(analyzeWord("transport", "en")).rejects.toBeInstanceOf(
+      AnalyzeRateLimitError,
+    );
+    await expect(analyzeWord("transport", "en")).rejects.toMatchObject({
+      code: "AI_RATE_LIMITED",
+      status: 429,
+      retryable: true,
+      upstreamStatus: 429,
+    });
+  });
+
+  it("maps 5xx responses to upstream errors", async () => {
+    process.env.GEMINI_API_KEY = "test-gemini-key";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response("{}", { status: 503 })),
+    );
+
+    await expect(analyzeWord("transport", "en")).rejects.toBeInstanceOf(
+      AnalyzeUpstreamError,
+    );
+    await expect(analyzeWord("transport", "en")).rejects.toMatchObject({
+      code: "AI_UPSTREAM_ERROR",
+      status: 503,
+      retryable: true,
+      upstreamStatus: 503,
+    });
+  });
+
+  it("maps invalid 200 responses to response-invalid errors", async () => {
+    process.env.GEMINI_API_KEY = "test-gemini-key";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            candidates: [],
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        ),
+      ),
+    );
+
+    await expect(analyzeWord("transport", "en")).rejects.toBeInstanceOf(
+      AnalyzeResponseInvalidError,
+    );
+    await expect(analyzeWord("transport", "en")).rejects.toMatchObject({
+      code: "AI_RESPONSE_INVALID",
+      status: 502,
+      retryable: true,
+    });
   });
 
   it("calls Gemini generateContent and returns structured locale-specific analysis", async () => {

@@ -1,4 +1,11 @@
 export type AnalyzeLocale = "zh-CN" | "en";
+export type AnalyzeErrorCode =
+  | "INVALID_REQUEST"
+  | "AI_CONFIG_ERROR"
+  | "AI_AUTH_ERROR"
+  | "AI_RATE_LIMITED"
+  | "AI_UPSTREAM_ERROR"
+  | "AI_RESPONSE_INVALID";
 
 export interface MorphemeItem {
   text: string;
@@ -36,7 +43,9 @@ export interface AnalyzeSuccessResponse {
 
 export interface AnalyzeErrorResponse {
   ok: false;
+  code: AnalyzeErrorCode;
   message: string;
+  retryable: boolean;
 }
 
 export type AnalyzeApiResponse = AnalyzeSuccessResponse | AnalyzeErrorResponse;
