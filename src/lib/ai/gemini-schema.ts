@@ -14,6 +14,9 @@ export const geminiMnemonicSchema = z.object({
 
 export const geminiAnalysisSchema = z.object({
   explanation: z.string().trim().min(1),
+  scene: z.string().trim().min(1).optional(),
+  formula: z.string().trim().min(1).optional(),
+  hook: z.string().trim().min(1).optional(),
   decomposable: z.boolean(),
   morphemes: z.array(geminiMorphemeSchema),
   mnemonics: z.array(geminiMnemonicSchema).max(3),
@@ -26,6 +29,9 @@ export const geminiAnalysisJsonSchema = {
   type: "object",
   properties: {
     explanation: { type: "string" },
+    scene: { type: "string" },
+    formula: { type: "string" },
+    hook: { type: "string" },
     decomposable: { type: "boolean" },
     morphemes: {
       type: "array",

@@ -20,6 +20,10 @@ interface AnalyzeResultLabels {
   sourceLabel: string;
   sourceGemini: string;
   explanation: string;
+  anchorTitle: string;
+  sceneLabel: string;
+  formulaLabel: string;
+  hookLabel: string;
   morphemeTitle: string;
   morphemeFallback: string;
   mnemonicsTitle: string;
@@ -121,6 +125,8 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
     );
   }
 
+  const hasMemoryAnchors = Boolean(data.scene || data.formula || data.hook);
+
   return (
     <div className="space-y-5">
       <Card className="shadow-fossil">
@@ -139,6 +145,40 @@ export function AnalyzeResultView({ locale, word, labels }: AnalyzeResultViewPro
           <p className="leading-7 text-muted-foreground">{data.explanation}</p>
         </CardContent>
       </Card>
+
+      {hasMemoryAnchors ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>{labels.anchorTitle}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {data.scene ? (
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {labels.sceneLabel}
+                </p>
+                <p className="mt-1 text-sm leading-7 text-muted-foreground">{data.scene}</p>
+              </div>
+            ) : null}
+            {data.formula ? (
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {labels.formulaLabel}
+                </p>
+                <p className="mt-1 font-medium">{data.formula}</p>
+              </div>
+            ) : null}
+            {data.hook ? (
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {labels.hookLabel}
+                </p>
+                <p className="mt-1 text-sm leading-7 text-muted-foreground">{data.hook}</p>
+              </div>
+            ) : null}
+          </CardContent>
+        </Card>
+      ) : null}
 
       <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="space-y-5">

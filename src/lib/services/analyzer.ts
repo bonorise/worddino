@@ -37,10 +37,16 @@ function buildPrompt(word: string, locale: AnalyzeLocale): string {
     `Target word: ${word}`,
     "Return valid JSON only.",
     "Explain the word simply.",
+    "Add scene as one vivid, concrete sentence describing the easiest mental image of the word.",
+    "Add formula as one short memory formula.",
+    "Add hook as one short sentence that helps the learner remember the word.",
     "If the word is not reliably decomposable, set decomposable to false and return morphemes as [].",
+    "Even if decomposable is false, scene, formula, and hook may still be returned.",
     "Keep familyWords to close and common related words only.",
     "Keep examples to at most 2 sentences.",
     "Keep mnemonics to at most 3 items.",
+    "Avoid philosophical, poetic, or inspirational tone.",
+    "Do not invent etymology.",
     "Do not use markdown.",
   ].join("\n");
 }
@@ -105,6 +111,9 @@ export async function analyzeWord(
     normalizedWord,
     locale,
     explanation: parsed.explanation,
+    scene: parsed.scene,
+    formula: parsed.formula,
+    hook: parsed.hook,
     decomposable: parsed.decomposable,
     morphemes: parsed.morphemes,
     mnemonics: parsed.mnemonics.map((item) => ({

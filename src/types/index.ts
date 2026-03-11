@@ -18,6 +18,9 @@ export interface WordAnalysisResult {
   locale: AnalyzeLocale;
   decomposable: boolean;
   explanation: string;
+  scene?: string;
+  formula?: string;
+  hook?: string;
   morphemes: MorphemeItem[];
   mnemonics: MnemonicCardData[];
   recommendedType: "homophone" | "story" | "image";

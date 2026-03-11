@@ -35,6 +35,9 @@ describe("analyzeWord", () => {
               {
                 text: JSON.stringify({
                   explanation: "To transport means to move people or things from one place to another.",
+                  scene: "Picture a truck carrying boxes across a bridge.",
+                  formula: "across + carry = transport",
+                  hook: "Remember transport as carrying something across distance.",
                   decomposable: true,
                   morphemes: [
                     {
@@ -102,6 +105,9 @@ describe("analyzeWord", () => {
     expect(requestBody.generationConfig.responseMimeType).toBe("application/json");
     expect(requestBody.generationConfig.responseJsonSchema).toBeTruthy();
     expect(requestBody.contents[0]?.parts[0]?.text).toContain("Locale: en");
+    expect(requestBody.contents[0]?.parts[0]?.text).toContain(
+      "Add scene as one vivid, concrete sentence describing the easiest mental image of the word.",
+    );
 
     expect(result).toEqual({
       word: "transport",
@@ -109,6 +115,9 @@ describe("analyzeWord", () => {
       locale: "en",
       decomposable: true,
       explanation: "To transport means to move people or things from one place to another.",
+      scene: "Picture a truck carrying boxes across a bridge.",
+      formula: "across + carry = transport",
+      hook: "Remember transport as carrying something across distance.",
       morphemes: [
         {
           text: "trans",

@@ -13,6 +13,9 @@ test("zh-CN search flow renders gemini analysis payload", async ({ page }) => {
           locale: "zh-CN",
           decomposable: true,
           explanation: "transport 指把人或物从一个地方运到另一个地方。",
+          scene: "想象一辆卡车穿过桥梁，把箱子运到远方。",
+          formula: "跨越 + 搬运 = 运输",
+          hook: "记住 transport，就是把东西带着跨过去。",
           morphemes: [
             {
               text: "trans",
@@ -47,6 +50,10 @@ test("zh-CN search flow renders gemini analysis payload", async ({ page }) => {
 
   await expect(page).toHaveURL(/\/zh-CN\/word\/transport$/);
   await expect(page.getByText("transport 指把人或物从一个地方运到另一个地方。")).toBeVisible();
+  await expect(page.getByText("记忆锚点")).toBeVisible();
+  await expect(page.getByText("想象一辆卡车穿过桥梁，把箱子运到远方。")).toBeVisible();
+  await expect(page.getByText("跨越 + 搬运 = 运输")).toBeVisible();
+  await expect(page.getByText("记住 transport，就是把东西带着跨过去。")).toBeVisible();
   await expect(page.getByText("故事助记")).toBeVisible();
   await expect(page.getByText("portable")).toBeVisible();
 });

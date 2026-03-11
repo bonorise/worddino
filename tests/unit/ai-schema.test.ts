@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { geminiAnalysisSchema } from "@/lib/ai/gemini-schema";
 import { generatedWordSchema } from "@/lib/ai/schema";
 
 describe("generatedWordSchema", () => {
@@ -51,5 +52,26 @@ describe("generatedWordSchema", () => {
     };
 
     expect(generatedWordSchema.parse(payload).word).toBe("transport");
+  });
+});
+
+describe("geminiAnalysisSchema", () => {
+  it("accepts optional memory anchor fields", () => {
+    const result = geminiAnalysisSchema.parse({
+      explanation: "transport means moving people or things from one place to another.",
+      scene: "Picture a truck carrying boxes across a bridge.",
+      formula: "across + carry = transport",
+      hook: "Remember transport as carrying something across distance.",
+      decomposable: true,
+      morphemes: [],
+      mnemonics: [],
+      recommendedType: "story",
+      examples: [],
+      familyWords: [],
+    });
+
+    expect(result.scene).toBe("Picture a truck carrying boxes across a bridge.");
+    expect(result.formula).toBe("across + carry = transport");
+    expect(result.hook).toBe("Remember transport as carrying something across distance.");
   });
 });
