@@ -57,3 +57,43 @@ test("zh-CN search flow renders gemini analysis payload", async ({ page }) => {
   await expect(page.getByText("故事助记")).toBeVisible();
   await expect(page.getByText("portable")).toBeVisible();
 });
+
+test("zh-CN search flow hides memory anchors when api returns none", async ({ page }) => {
+  await page.route("**/api/analyze", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: true,
+        data: {
+          word: "people",
+          normalizedWord: "people",
+          locale: "zh-CN",
+          decomposable: false,
+          explanation: "people 指人们、人民，是一个更适合整体记忆的常见词。",
+          morphemes: [],
+          mnemonics: [
+            {
+              type: "story",
+              title: "故事助记",
+              content: "把 people 想成一群人在广场上聚集。",
+            },
+          ],
+          recommendedType: "story",
+          examples: ["Many people are waiting at the station."],
+          familyWords: [],
+          source: "gemini",
+        },
+      }),
+    });
+  });
+
+  await page.goto("/zh-CN");
+  await page.getByPlaceholder("输入英文单词，例如 transport").fill("people");
+  await page.getByRole("button", { name: "开始挖掘" }).click();
+
+  await expect(page).toHaveURL(/\/zh-CN\/word\/people$/);
+  await expect(page.getByText("people 指人们、人民，是一个更适合整体记忆的常见词。")).toBeVisible();
+  await expect(page.getByText("记忆锚点")).toHaveCount(0);
+  await expect(page.getByText("故事助记")).toBeVisible();
+});
